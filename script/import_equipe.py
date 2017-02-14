@@ -1,6 +1,6 @@
 import psycopg2
 import pandas as pd
-from objets.equipe import Equipe, get_equipe_fromDB
+from objets.equipe import Equipe, get_equipe_by_code_fromDB
 from objets import *
 
 # Connection à la base de données
@@ -9,7 +9,7 @@ equipes = pd.read_csv(filepath_or_buffer="./../data/equipes.csv", sep=";", names
 
 
 for i, eq in equipes.iterrows():
-    if (get_equipe_fromDB(eq["code"], conn)):
+    if (get_equipe_by_code_fromDB(eq["code"], conn)):
         print("Equipe {} déjà existante".format(eq["libelle"]))
     else:
         Equipe(eq["code"], eq["libelle"]).create_equipe(conn)

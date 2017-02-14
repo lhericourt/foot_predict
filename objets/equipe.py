@@ -18,10 +18,24 @@ class Equipe:
         cur.close()
 
 
-def get_equipe_fromDB(code, conn):
+def get_equipe_by_code_fromDB(code, conn):
     """Méthode pour récupérer une équipe de la base"""
     cur = conn.cursor()
     cur.execute("SELECT code, libelle FROM equipe WHERE code = (%s)", [code])
+
+    try:
+        equipe = cur.fetchone()
+        cur.close()
+        return Equipe(equipe[0], equipe[1])
+
+    except:
+        print("L'équipe n'existe pas")
+
+
+def get_equipe_by_libelle_fromDB(libelle, conn):
+    """Méthode pour récupérer une équipe de la base"""
+    cur = conn.cursor()
+    cur.execute("SELECT code, libelle FROM equipe WHERE libelle = (%s)", [libelle])
 
     try:
         equipe = cur.fetchone()
@@ -44,3 +58,4 @@ def get_all_equipes_fromDB(conn):
 
     except:
         print("Aucune equipe n'est dans la base")
+

@@ -11,9 +11,9 @@ url_equipe = "http://www.lequipe.fr"
 # On récupère les match du site lequipe.fr
 saisons = {
     "2016": "/Football/ligue-1-resultats.html",
-    "2015": "/Football/FootballResultat52242.html",
-    "2014": "/Football/FootballResultat48028.html",
-    "2013": "/Football/FootballResultat45056.html",
+    #"2015": "/Football/FootballResultat52242.html",
+    #"2014": "/Football/FootballResultat48028.html",
+    #"2013": "/Football/FootballResultat45056.html",
 }
 
 
@@ -75,6 +75,7 @@ conn = psycopg2.connect(host="localhost", dbname="foot_dev", user="foot", passwo
 liste_equipes = get_all_equipes_fromDB(conn)
 liste_equipes = pd.DataFrame(liste_equipes, columns=["code", "libelle"])
 liste_equipes["libelle"] = liste_equipes.apply(axis=1, func=lambda x: x["libelle"].replace(" ", ""))
+
 
 for annee in saisons:
     liste_url_match = get_all_url_day_for_a_season(url_equipe + saisons[annee])
