@@ -91,37 +91,3 @@ for annee in saisons:
                 match.create_match(conn)
 
 conn.close()
-
-
-
-"""
-Fonction inutile en fin de compte
-def get_url_match(url_confrontation, saison, journee):
-    \"""
-    Retourne la page de match
-    :param url_confrontation: url avec la liste de toutes les confrontations
-    :param saison:
-    :param journee:
-    :return:
-    \"""
-    try:
-        page_confrontation = req.urlopen(url_equipe + url_confrontation).read().decode('utf-8', 'ignore')
-        soup_confrontation = BeautifulSoup(page_confrontation, "html.parser")
-        soup_confrontation = soup_confrontation.find_all("div", class_=["alternante"])
-    except:
-        print("Page de la confrontation {} non trouvée".format(url_confrontation))
-        return ""
-
-    for confrontation in soup_confrontation:
-        saison_conf = confrontation.find("div", class_="col-200").text[:4]
-        journee_conf = re.findall(r"(\d+)", confrontation.find("div", class_="col-250").text)[0]
-        url_match = ""
-        try:
-            url_match = confrontation.find("div", class_="col-172").find("a")["href"]
-        except:
-            pass
-
-        if (saison == saison_conf and journee == journee_conf):
-            return url_match
-
-"""

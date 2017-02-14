@@ -1,5 +1,5 @@
 import psycopg2
-
+import pandas as pd
 
 class Match:
     """Classe définissant une équipe caractérisée par :
@@ -30,7 +30,6 @@ class Match:
 
 def get_match_fromDB(saison, journee, equipe_dom, conn):
     """Méthode pour récupérer une équipe de la base"""
-    print(" les params sont : {}, {}, {}".format(saison, journee, equipe_dom))
     cur = conn.cursor()
     cur.execute(
         "SELECT saison, journee, code_equipe_dom, code_equipe_ext, score, url_equipe "
@@ -44,3 +43,25 @@ def get_match_fromDB(saison, journee, equipe_dom, conn):
 
     except:
         print("Le Match n'existe pas en base")
+
+
+def get_match_with_no_stat_fromDB(conn):
+    cur = conn.cursor()
+    cur.execute("SELECT match.id_match, code_equipe_dom, code_equipe_ext, url_equipe, score, saison, journee "
+                "FROM match LEFT OUTER JOIN stat_equipe_par_match "
+                "ON match.id_match = stat_equipe_par_match.id_match WHERE victoire IS NULL")
+    liste_match = cur.fetchall()
+    cur.close
+    return liste_match
+
+
+def get_all_match_fromDB(conn):
+    """Méthode pour récupérer une équipe de la base"""
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id_match, saison, journee, code_equipe_dom, code_equipe_ext, score, url_equipe FROM match LIMIT 10")
+
+    all_match = cur.fetchall()
+    cur.close()
+    all_match = pd.DataFrame(all_match, columns=["id_match", "saison", "journee", "code_equipe_dom", "code_equipe_ext", "score", "url_equipe"])
+    return all_match
