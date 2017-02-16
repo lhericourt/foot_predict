@@ -77,18 +77,19 @@ liste_equipes = pd.DataFrame(liste_equipes, columns=["code", "libelle"])
 liste_equipes["libelle"] = liste_equipes.apply(axis=1, func=lambda x: x["libelle"].replace(" ", ""))
 
 
-for annee in saisons:
-    liste_url_match = get_all_url_day_for_a_season(url_equipe + saisons[annee])
-    # Pour chaque des journée on récupère les matche
-    # et on les ajoute en base
-    for url in liste_url_match:
-        liste_match = get_all_match_for_a_day(url, annee)
-        for match in liste_match:
-            if "-" not in match.score:
-                print("Le match n'est pas encore joué")
-            elif get_match_fromDB(match.saison, match.journee, match.equipe_dom, conn):
-                print("Le match {} {} {} existe déjà".format(match.saison, match.journee, match.equipe_dom))
-            else:
-                match.create_match(conn)
+if __name__ == "__main__":
+    for annee in saisons:
+        liste_url_match = get_all_url_day_for_a_season(url_equipe + saisons[annee])
+        # Pour chaque des journée on récupère les matche
+        # et on les ajoute en base
+        for url in liste_url_match:
+            liste_match = get_all_match_for_a_day(url, annee)
+            for match in liste_match:
+                if "-" not in match.score:
+                    print("Le match n'est pas encore joué")
+                elif get_match_fromDB(match.saison, match.journee, match.equipe_dom, conn):
+                    print("Le match {} {} {} existe déjà".format(match.saison, match.journee, match.equipe_dom))
+                else:
+                    match.create_match(conn)
 
 conn.close()

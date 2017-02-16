@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import urllib.request as req
-from objets.match import get_all_match_fromDB, get_match_with_no_stat_fromDB
+from objets.match import get_all_match_fromDB, get_match_with_no_stat_equipe_fromDB
 import pandas as pd
 from objets.equipe import get_all_equipes_fromDB
 import psycopg2
@@ -164,7 +164,7 @@ def get_stat_equipe_for_a_day(match, soup_liste_equipe, soup_classement):
 
 
 # Récupération de tous les matchs sans stat associées
-liste_match = get_match_with_no_stat_fromDB(conn)
+liste_match = get_match_with_no_stat_equipe_fromDB(conn)
 
 for match in liste_match:
     print(match)

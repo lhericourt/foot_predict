@@ -80,43 +80,39 @@ def add_joueur(id_joueur_site_equipe, conn):
     # Date de naissance du joueur
     date_naissance = "1900-01-01"
     try:
-        date_naissance = div_joueur.find("td", class_="calcage")["ddn"]
-        date_naissance_decomposee = re.findall(r"(\d+)", date_naissance)
+        date_naissance_div = div_joueur.find("td", class_="calcage")["ddn"]
+        date_naissance_decomposee = re.findall(r"(\d+)", date_naissance_div)
         jour = date_naissance_decomposee[1]
         mois = date_naissance_decomposee[0]
         annee = date_naissance_decomposee[2]
-        date_naissance = annee + "-" + mois + "-" + jour
+        # Le format des dates n'est pas toujours bon sur le site d'où cette condition
+        if not (jour == "0" or mois == "0"):
+            date_naissance = annee + "-" + mois + "-" + jour
     except:
         print("Le joueur {} n'a pas de date de naissance".format(nom))
 
-    # Taille du joueur
+    # Taille, poids et poste du joueur
     taille = 0
-    try:
-        taille = div_joueur.find_all("tr")[5].find_all("td")[1].text.replace("m", "")
-    except:
-        print("Le joueur {} n'a pas de date de naissance".format(nom))
-
-    # Poids du joueur
     poids = 0
-    try:
-        poids = re.findall(r"(\d+)", div_joueur.find_all("tr")[6].find_all("td")[1].text)[0]
-    except:
-        print("Le joueur {} n'a pas de poids".format(nom))
-
-    # Poste du joueur
     poste = "NC"
-    try:
-        libelle_poste = div_joueur.find_all("tr")[7].find_all("td")[1].text.lower().strip()
-        if libelle_poste == "défenseur":
-            poste = "DEF"
-        elif libelle_poste == "attaquant":
-            poste = "ATT"
-        elif libelle_poste == "milieur":
-            poste = "MIL"
-        elif libelle_poste == "gardien":
-            poste = "GAR"
-    except:
-        print("Le joueur {} n'a pas de poste de défini".format(nom))
+
+    for tr in div_joueur.find_all("tr"):
+        try:
+            value = tr.find_all("td")[1].text.lower().strip()
+            if re.search(r"\d+ kg", value):
+                poids = value.replace("kg", "").strip()
+            if re.search(r"\dm\d+", value):
+                taille = value.replace("m", "").strip()
+            if value == "défenseur":
+                poste = "DEF"
+            elif value == "attaquant":
+                poste = "ATT"
+            elif value == "milieu":
+                poste = "MIL"
+            elif value == "gardien":
+                poste = "GAR"
+        except:
+            pass
 
     joueur_obj = Joueur(nom, poste, date_naissance, taille, poids, id_joueur_site_equipe)
 

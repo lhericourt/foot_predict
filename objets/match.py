@@ -45,11 +45,21 @@ def get_match_fromDB(saison, journee, equipe_dom, conn):
         print("Le Match n'existe pas en base")
 
 
-def get_match_with_no_stat_fromDB(conn):
+def get_match_with_no_stat_equipe_fromDB(conn):
     cur = conn.cursor()
     cur.execute("SELECT match.id_match, code_equipe_dom, code_equipe_ext, url_equipe, score, saison, journee "
                 "FROM match LEFT OUTER JOIN stat_equipe_par_match "
                 "ON match.id_match = stat_equipe_par_match.id_match WHERE victoire IS NULL")
+    liste_match = cur.fetchall()
+    cur.close
+    return liste_match
+
+
+def get_match_with_no_stat_joueur_fromDB(conn):
+    cur = conn.cursor()
+    cur.execute("SELECT match.id_match, code_equipe_dom, code_equipe_ext, url_equipe "
+                "FROM match LEFT OUTER JOIN stat_joueur_par_match "
+                "ON match.id_match = stat_joueur_par_match.id_match WHERE stat_joueur_par_match.id_match IS NULL")
     liste_match = cur.fetchall()
     cur.close
     return liste_match
